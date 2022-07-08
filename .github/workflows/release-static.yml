@@ -1,0 +1,58 @@
+name: Release static binary
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  release-static-binary:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: set tag env
+        run: echo "VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        
+      - name: Docker build and run
+        run: |
+          docker build -t gotabit-release .
+          docker rm -f gotabit
+          docker run --rm -tid --name gotabit gotabit-release sh
+        
+      - name: make release and checksum
+        run: |
+          rm -rf release && mkdir -p release
+          docker cp gotabit:/usr/bin/gotabitd ./release/gotabitd-${{ env.VERSION }}-linux-amd64
+          cd release && sha256sum gotabitd-${{ env.VERSION }}-linux-amd64 > checksum.txt
+
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload release binary
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./release/gotabitd-${{ env.VERSION }}-linux-amd64
+          asset_name: gotabitd-${{ env.VERSION }}-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload release checksum
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./release/checksum.txt
+          asset_name: checksum.txt
+          asset_content_type: application/file
+
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
