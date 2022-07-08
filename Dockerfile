@@ -1,25 +1,13 @@
-# docker build . -t cosmwasm/wasmd:latest
-# docker run --rm -it cosmwasm/wasmd:latest /bin/sh
 FROM golang:1.18.2-alpine3.15 AS go-builder
-#ARG arch=x86_64
+
+ENV APPNAME=gotabitd
 
 ENV LIBWASMVM_VERSION=v1.0.0
 
-# this comes from standard alpine nightly file
-#  https://github.com/rust-lang/docker-rust-nightly/blob/master/alpine3.12/Dockerfile
-# with some changes to support our toolchain, etc
-RUN set -eux; apk add --no-cache ca-certificates build-base;
-
-RUN apk add git cmake
-# NOTE: add these to run with LEDGER_ENABLED=true
-# RUN apk add libusb-dev linux-headers
+RUN set -eux; apk add --no-cache ca-certificates build-base git;
 
 WORKDIR /code
 COPY . /code/
-
-# Install mimalloc
-RUN git clone --depth 1 https://github.com/microsoft/mimalloc; cd mimalloc; mkdir build; cd build; cmake ..; make -j$(nproc); make install
-ENV MIMALLOC_RESERVE_HUGE_OS_PAGES=4
 
 # See https://github.com/CosmWasm/wasmvm/releases
 ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/libwasmvm_muslc.aarch64.a /lib/libwasmvm_muslc.aarch64.a
@@ -31,7 +19,9 @@ RUN sha256sum /lib/libwasmvm_muslc.x86_64.a | grep f6282df732a13dec836cda1f399dd
 RUN cp /lib/libwasmvm_muslc.`uname -m`.a /lib/libwasmvm_muslc.a
 
 # force it to use static lib (from above) not standard libgo_cosmwasm.so file
-RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build
+RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build
+RUN echo "Ensuring binary is statically linked ..." \
+  && (file /code/build/$APPNAME | grep "statically linked")
 
 FROM alpine:3.15.4
 
@@ -40,6 +30,10 @@ WORKDIR /chain
 ENV APPNAME=gotabitd
 
 COPY --from=go-builder /code/build/$APPNAME /usr/bin/$APPNAME
+
+COPY ./scripts/docker/* /opt/
+
+RUN chmod +x /opt/chain_*
 
 # rest server
 EXPOSE 1317

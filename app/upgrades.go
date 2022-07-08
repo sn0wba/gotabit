@@ -9,6 +9,7 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -20,14 +21,12 @@ import (
 	store "github.com/cosmos/cosmos-sdk/store/types"
 )
 
-
 // RegisterUpgradeHandlers returns upgrade handlers
 func (app *App) RegisterUpgradeHandlers(cfg module.Configurator) {
 	// left here for hysterical raisins - we should probably remove
 	// bankBaseKeeper, _ := app.BankKeeper.(bankkeeper.BaseKeeper)
 	// app.UpgradeKeeper.SetUpgradeHandler(veritas.UpgradeName, veritas.CreateUpgradeHandler(app.mm, cfg, &app.StakingKeeper, &bankBaseKeeper))
 	app.UpgradeKeeper.SetUpgradeHandler("multiverse", func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
-
 		vm[icatypes.ModuleName] = app.mm.Modules[icatypes.ModuleName].ConsensusVersion()
 
 		// create ICS27 Controller submodule params, controller module not enabled.

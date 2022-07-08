@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/gotabit/gotabit/app"
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
 	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/client"
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"

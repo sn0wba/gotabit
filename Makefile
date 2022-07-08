@@ -74,7 +74,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=$(NAME) \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
-			-X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
+		  -X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TM_VERSION)
 
 # DB backend selection
 ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
@@ -95,6 +95,10 @@ endif
 # handle boltdb
 ifeq (boltdb,$(findstring boltdb,$(COSMOS_BUILD_OPTIONS)))
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=boltdb
+endif
+
+ifeq ($(LINK_STATICALLY),true)
+	ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 endif
 
 ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
@@ -124,10 +128,10 @@ endif
 
 build-linux:
 	mkdir -p $(BUILDDIR)
-	docker build --no-cache --tag $(NAME)/$(APPNAME) ./
-	docker create --name temp $(NAME)/$(APPNAME):latest
-	docker cp temp:/usr/local/bin/$(APPNAME) $(BUILDDIR)/
-	docker rm temp
+	docker build --no-cache --tag $(NAME)-dev ./
+	docker create --name $(NAME)-temp $(NAME)-dev
+	docker cp $(NAME)-temp:/usr/bin/$(APPNAME) $(BUILDDIR)/
+	docker rm $(NAME)-temp
 
 install: go.sum 
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/$(APPNAME)
@@ -138,18 +142,42 @@ clean:
 .PHONY: build build-linux install 
 
 ###############################################################################
+###                                  Proto                                  ###
+###############################################################################
+
+proto-all: proto proto-swagger
+
+proto:
+	@echo "Generate Protobuf"
+	./scripts/protoc-gen.sh
+
+proto-swagger:
+	@echo "Generating Protobuf swagger files"
+	./scripts/protoc-swagger-gen.sh
+
+.PHONY: lint proto proto-swagger
+
+###############################################################################
 ###                                Linting                                  ###
 ###############################################################################
 
 lint:
+ifeq (,$(shell which golangci-lint))
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
+endif
 	golangci-lint run --out-format=tab
 
-lint-fix:
-	golangci-lint run --fix --out-format=tab --issues-exit-code=0
-.PHONY: lint lint-fix
-
 format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs misspell -w
+ifeq (,$(shell which goimports))
+	$ go install golang.org/x/tools/cmd/goimports@latest
+endif
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/*" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs goimports -w -local github.com/cosmos/cosmos-sdk
-.PHONY: format
+
+lint-fix:
+ifeq (,$(shell which golangci-lint))
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
+endif
+	golangci-lint run --fix --out-format=tab --issues-exit-code=0
+
+.PHONY: lint format lint-fix
