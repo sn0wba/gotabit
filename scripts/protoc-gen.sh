@@ -26,4 +26,7 @@ cd ..
 #
 # Note: Proto files are suffixed with the current binary version.
 cp -r github.com/gotabit/gotabit/* ./
+
 rm -rf github.com
+
+go mod tidy
