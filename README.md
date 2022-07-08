@@ -1,6 +1,6 @@
 <div align="center">
   <h1> GotaBit Chain </h1>
-  <p> The full-node software implementation of the Gotabit blockchain. </p>
+  <p> The full-node software implementation of the GotaBit blockchain. </p>
   
 <p align="center">
   <a href="https://docs.gotabit.io"><strong>Explore the Docs</strong></a>
@@ -18,11 +18,11 @@
 </div>
 
 ## Table of Contents <!-- omit in toc -->
-- [What is Gotabit?](#what-is-gotabit)
+- [What is GotaBit?](#what-is-gotabit)
 - [Installation](#installation)
   - [From Binary](#from-binary)
   - [From Source](#from-source)
-  - [Gotabitd](#gotabitd)
+  - [GotaBitd](#gotabitd)
 - [Node Setup](#node-operators)
 - [Validators](#validators)
 - [Delegators](#delegators)
@@ -32,13 +32,13 @@
 
 <br >
 
-## What is Gotabit?
+## What is GotaBit?
 
-**[Gotabit](https://g.io)** is a public, open-source, proof-of-stake, sovereign blockchain in the Cosmos ecosystem. It aims to provide a sandbox environment for the deployment of such inter-operable smart contracts.
+**[GotaBit](https://g.io)** is a public, open-source, proof-of-stake, sovereign blockchain in the Cosmos ecosystem. It aims to provide a sandbox environment for the deployment of such inter-operable smart contracts.
 
 The network serves as a decentralized, permissionless, and censorship resistant zone for developers to efficiently and securely launch application specific smart contracts.
 
-The Gotabit is powered by the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk), [CosmWasm](https://github.com/CosmWasm/cosmwasm) and [Tendermint](https://github.com/tendermint/tendermint) BFT consensus.
+The GotaBit is powered by the [Cosmos SDK](https://github.com/cosmos/cosmos-sdk), [CosmWasm](https://github.com/CosmWasm/cosmwasm) and [Tendermint](https://github.com/tendermint/tendermint) BFT consensus.
 
 
 ## Installation
@@ -51,7 +51,7 @@ The easiest way to install is to download a pre-built binary. You can find the l
 
 **Step 1: Install Golang**
 
-Go v1.18+ or higher is required for The Gotabit Node.
+Go v1.18+ or higher is required for The GotaBit Node.
 
 1. Install [Go 1.18+ from the official site](https://go.dev/dl/). Ensure that your `GOPATH` and `GOBIN` environment variables are properly set up by using the following commands:
 
@@ -88,9 +88,9 @@ cd node
 git checkout main
 ```
 
-**Step 3: Build Gotabit node**
+**Step 3: Build GotaBit node**
 
-Run the following command to install `gotabitd` to your `GOPATH` and build the Gotabit node. `gotabitd` is the node daemon and CLI for interacting with a Gotabit node.
+Run the following command to install `gotabitd` to your `GOPATH` and build the GotaBit node. `gotabitd` is the node daemon and CLI for interacting with a GotaBit node.
 
 ```bash
 make install
@@ -119,7 +119,7 @@ build_deps:
 
 ### `Gotabitd`
 
-`gotabitd` is the all-in-one CLI and node daemon for interacting with the Gotabit blockchain. 
+`gotabitd` is the all-in-one CLI and node daemon for interacting with the GotaBit blockchain. 
 
 To view various subcommands and their expected arguments, use the following command:
 
@@ -168,19 +168,19 @@ Visit the [documentation page](https://docs.gotabit.io/how-to) for more info on 
 
 ## Node Operators
 
-If you're interested in running a node on the current Gotabit network, check out the docs to [Join the Gotabit Mainnet](https://docs.gotabit.io/).
+If you're interested in running a node on the current GotaBit network, check out the docs to [Join the GotaBit Mainnet](https://docs.gotabit.io/).
 
 ## Validators
 
-If you want to participate and help secure Gotabit network, check out becoming a validator. Information on what a validator is and how to participate as one can be found at the [Validator FAQ](https://docs.gotabit.io/). If you're running a validator node on the Gotabit network, reach out to a Janitor on the [GotaBit Discord](https://discord.gg/dDgRkVwqD6) to join the `#validators-verified` channel.
+If you want to participate and help secure GotaBit network, check out becoming a validator. Information on what a validator is and how to participate as one can be found at the [Validator FAQ](https://docs.gotabit.io/). If you're running a validator node on the GotaBit network, reach out to a Janitor on the [GotaBit Discord](https://discord.gg/dDgRkVwqD6) to join the `#validators-verified` channel.
 
 ## Delegators
 
-If you still want to participate on the Gotabit network, check out becoming a delegator. Information what a delegator is and how to participate as one can be found at the [Delegator FAQ](https://docs.gotabit.io/).
+If you still want to participate on the GotaBit network, check out becoming a delegator. Information what a delegator is and how to participate as one can be found at the [Delegator FAQ](https://docs.gotabit.io/).
 
 ## Testnet
 
-To participate in or utilize the current Gotabit testnet, take a look at the [gotabit/testnets](https://github.com/gotabit/testnets) repository. 
+To participate in or utilize the current GotaBit testnet, take a look at the [gotabit/testnets](https://github.com/gotabit/testnets) repository. 
 
 ## Talk to us
 
