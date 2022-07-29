@@ -7,8 +7,7 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v1.16.0
 go install github.com/bufbuild/buf/cmd/buf@v1.6.0
-GO111MODULE=off go get github.com/cosmos/gogoproto/protoc-gen-gocosmos
-
+go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
 echo "Generating gogo proto code"
 cd proto
 proto_dirs=$(find ./gotabit -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
