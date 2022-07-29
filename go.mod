@@ -5,18 +5,18 @@ go 1.18
 require (
 	github.com/CosmWasm/wasmd v0.27.0
 	github.com/cosmos/cosmos-sdk v0.45.6
-	github.com/cosmos/ibc-go/v3 v3.0.0
+	github.com/cosmos/ibc-go/v3 v3.0.1
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/ignite/cli v0.22.2
+	github.com/ignite/cli v0.23.0
 	github.com/prometheus/client_golang v1.12.1
 	github.com/rakyll/statik v0.1.7
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.7.4
-	github.com/tendermint/spn v0.2.1-0.20220610090138-44b136f042c4
+	github.com/tendermint/spn v0.2.1-0.20220708132853-26a17f03c072
 	github.com/tendermint/tendermint v0.34.19
 	github.com/tendermint/tm-db v0.6.7
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f
@@ -153,7 +153,7 @@ require (
 	github.com/takuoki/gocase v1.0.0 // indirect
 	github.com/tendermint/btcd v0.1.1 // indirect
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect
-	github.com/tendermint/fundraising v0.3.0 // indirect
+	github.com/tendermint/fundraising v0.3.1-0.20220613014523-03b4a2d4481a // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce // indirect
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
