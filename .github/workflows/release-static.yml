@@ -25,7 +25,9 @@ jobs:
         run: |
           rm -rf release && mkdir -p release
           docker cp gotabit:/usr/bin/gotabitd ./release/gotabitd-${{ env.VERSION }}-linux-amd64
-          cd release && sha256sum gotabitd-${{ env.VERSION }}-linux-amd64 > checksum.txt
+          cd release
+          tar -czf gotabitd-${{ env.VERSION }}-linux-amd64.tar.gz gotabitd-${{ env.VERSION }}-linux-amd64
+          sha256sum gotabitd-${{ env.VERSION }}-linux-amd64.tar.gz > checksum.txt
 
       - name: Get release
         id: get_release
@@ -39,8 +41,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./release/gotabitd-${{ env.VERSION }}-linux-amd64
-          asset_name: gotabitd-${{ env.VERSION }}-linux-amd64
+          asset_path: ./release/gotabitd-${{ env.VERSION }}-linux-amd64.tar.gz
+          asset_name: gotabitd-${{ env.VERSION }}-linux-amd64.tar.gz
           asset_content_type: application/octet-stream
 
       - name: Upload release checksum
