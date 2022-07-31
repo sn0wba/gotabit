@@ -1,6 +1,7 @@
 vue/
 build/
 release/
+go.sum
 .idea/
 .vscode/
 .DS_Store

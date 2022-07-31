@@ -126,6 +126,7 @@ import (
 
 const (
 	AccountAddressPrefix = "gio"
+	CoinType						 =  118;						
 	Name                 = "gotabit"
 )
 
