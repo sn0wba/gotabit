@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gotabit/gotabit/app"
-	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
+	"github.com/gotabit/gotabit/cmd/cosmoscmd"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"

@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	tmdb "github.com/tendermint/tm-db"
 
@@ -20,6 +19,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/gotabit/gotabit/app"
+	"github.com/gotabit/gotabit/cmd/cosmoscmd"
 )
 
 type (

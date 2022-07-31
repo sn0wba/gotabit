@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/gotabit/gotabit/app"
-	"github.com/ignite/cli/ignite/pkg/cosmoscmd"
+	"github.com/gotabit/gotabit/cmd/cosmoscmd"
+
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
