@@ -1,9 +1,9 @@
 #!/bin/sh
 
 MONIKER=${MONIKER:-node001}
-STAKE=${STAKE_TOKEN:-ugio}
+STAKE=${STAKE_TOKEN:-ugtb}
 FEE=${FEE_TOKEN:-uusd}
-CHAIN_ID=${CHAIN_ID:-gotabit}
+CHAIN_ID=${CHAIN_ID:-gotabit-local}
 CONFIG_DIR=${CONFIG_DIR:-$HOME/.gotabit}
 BIN="${BINARY:-gotabitd} --home $CONFIG_DIR"
 PASSWORD=${PASSWORD:-gotabitpwd}

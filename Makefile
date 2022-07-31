@@ -126,6 +126,9 @@ else
 	go build -mod=readonly $(BUILD_FLAGS) -o build/$(APPNAME) ./cmd/$(APPNAME)
 endif
 
+go.sum:
+	go mod tidy
+
 build-linux:
 	mkdir -p $(BUILDDIR)
 	docker build --no-cache --tag $(NAME)-dev ./
@@ -133,7 +136,7 @@ build-linux:
 	docker cp $(NAME)-temp:/usr/bin/$(APPNAME) $(BUILDDIR)/
 	docker rm $(NAME)-temp
 
-install: go.sum 
+install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/$(APPNAME)
 
 clean:
@@ -169,7 +172,7 @@ endif
 
 format:
 ifeq (,$(shell which goimports))
-	$ go install golang.org/x/tools/cmd/goimports@latest
+	go install golang.org/x/tools/cmd/goimports@latest
 endif
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/*" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs goimports -w -local github.com/cosmos/cosmos-sdk
