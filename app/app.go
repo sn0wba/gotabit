@@ -118,6 +118,10 @@ import (
 	epochskeeper "github.com/gotabit/gotabit/x/epochs/keeper"
 	epochstypes "github.com/gotabit/gotabit/x/epochs/types"
 
+	"github.com/gotabit/gotabit/x/sendMsg"
+	sendMsgkeeper "github.com/gotabit/gotabit/x/sendMsg/keeper"
+	sendMsgtypes "github.com/gotabit/gotabit/x/sendMsg/types"
+
 	"github.com/gotabit/gotabit/x/mint"
 	mintkeeper "github.com/gotabit/gotabit/x/mint/keeper"
 	minttypes "github.com/gotabit/gotabit/x/mint/types"
@@ -218,6 +222,7 @@ var (
 		ica.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		epochs.AppModuleBasic{},
+		sendMsg.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -230,9 +235,10 @@ var (
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		icatypes.ModuleName:    nil,
-		wasm.ModuleName:        {authtypes.Burner},
-		epochstypes.ModuleName: nil,
+		icatypes.ModuleName:     nil,
+		wasm.ModuleName:         {authtypes.Burner},
+		epochstypes.ModuleName:  nil,
+		sendMsgtypes.ModuleName: nil,
 	}
 )
 
@@ -301,6 +307,8 @@ type App struct {
 
 	EpochsKeeper epochskeeper.Keeper
 
+	SendMsgKeeper sendMsgkeeper.Keeper
+
 	// mm is the module manager
 	mm *module.Manager
 
@@ -336,7 +344,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		icahosttypes.StoreKey, wasm.StoreKey, epochstypes.StoreKey,
+		icahosttypes.StoreKey, wasm.StoreKey, epochstypes.StoreKey, sendMsgtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -479,6 +487,7 @@ func New(
 			app.MintKeeper.Hooks(),
 		),
 	)
+	app.SendMsgKeeper = sendMsgkeeper.NewKeeper(appCodec, keys[sendMsgtypes.StoreKey])
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	wasmDir := filepath.Join(homePath, "data")
@@ -567,6 +576,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
+		sendMsg.NewAppModule(appCodec, app.SendMsgKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -597,6 +607,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		sendMsgtypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -623,6 +634,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		sendMsgtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -654,6 +666,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		sendMsgtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -680,6 +693,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
+		sendMsg.NewAppModule(appCodec, app.SendMsgKeeper),
 	)
 	app.sm.RegisterStoreDecoders()
 
@@ -903,6 +917,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
+	paramsKeeper.Subspace(sendMsgtypes.ModuleName)
 
 	return paramsKeeper
 }
