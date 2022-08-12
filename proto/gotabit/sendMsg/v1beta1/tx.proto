@@ -1,0 +1,33 @@
+syntax = "proto3";
+package gotabit.sendMsg;
+
+import "cosmos/base/v1beta1/coin.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/gotabit/gotabit/x/sendMsg/types";
+option (gogoproto.goproto_getters_all) = false;
+
+service Msg {
+  rpc SendMsg(MsgSendMsg) returns (MsgSendMsgResponse);
+}
+
+// MsgSendMsg defines a message for sending a message
+message MsgSendMsg {
+
+  string from = 1 [
+    (gogoproto.moretags) = "yaml:\"from_address\""
+  ];
+
+  string to = 2 [
+    (gogoproto.moretags) = "yaml:\"to_address\""
+  ];
+
+  string message = 3 [
+    (gogoproto.moretags) = "yaml:\"msg\""
+  ];
+}
+
+// MsgSendMsgResponse defines the MsgSendMsg response type
+message MsgSendMsgResponse {
+  uint64 id = 1;
+}
