@@ -118,6 +118,10 @@ import (
 	epochskeeper "github.com/gotabit/gotabit/x/epochs/keeper"
 	epochstypes "github.com/gotabit/gotabit/x/epochs/types"
 
+	"github.com/gotabit/gotabit/x/msg"
+	msgkeeper "github.com/gotabit/gotabit/x/msg/keeper"
+	msgtypes "github.com/gotabit/gotabit/x/msg/types"
+
 	"github.com/gotabit/gotabit/x/mint"
 	mintkeeper "github.com/gotabit/gotabit/x/mint/keeper"
 	minttypes "github.com/gotabit/gotabit/x/mint/types"
@@ -218,6 +222,7 @@ var (
 		ica.AppModuleBasic{},
 		wasm.AppModuleBasic{},
 		epochs.AppModuleBasic{},
+		msg.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -233,6 +238,7 @@ var (
 		icatypes.ModuleName:    nil,
 		wasm.ModuleName:        {authtypes.Burner},
 		epochstypes.ModuleName: nil,
+		msgtypes.ModuleName:    nil,
 	}
 )
 
@@ -301,6 +307,8 @@ type App struct {
 
 	EpochsKeeper epochskeeper.Keeper
 
+	MsgKeeper msgkeeper.Keeper
+
 	// mm is the module manager
 	mm *module.Manager
 
@@ -336,7 +344,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
-		icahosttypes.StoreKey, wasm.StoreKey, epochstypes.StoreKey,
+		icahosttypes.StoreKey, wasm.StoreKey, epochstypes.StoreKey, msgtypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -480,6 +488,8 @@ func New(
 		),
 	)
 
+	app.MsgKeeper = msgkeeper.NewKeeper(appCodec, keys[msgtypes.StoreKey])
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	wasmDir := filepath.Join(homePath, "data")
 
@@ -567,6 +577,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
+		msg.NewAppModule(appCodec, app.MsgKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -597,6 +608,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		msgtypes.ModuleName,
 	)
 
 	app.mm.SetOrderEndBlockers(
@@ -623,6 +635,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		msgtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -654,6 +667,7 @@ func New(
 		icatypes.ModuleName,
 		wasm.ModuleName,
 		epochstypes.ModuleName,
+		msgtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -680,6 +694,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/appModule
 		wasm.NewAppModule(appCodec, &app.wasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		epochs.NewAppModule(appCodec, app.EpochsKeeper),
+		msg.NewAppModule(appCodec, app.MsgKeeper),
 	)
 	app.sm.RegisterStoreDecoders()
 
@@ -903,6 +918,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(wasm.ModuleName)
 	paramsKeeper.Subspace(epochstypes.ModuleName)
+	paramsKeeper.Subspace(msgtypes.ModuleName)
 
 	return paramsKeeper
 }
