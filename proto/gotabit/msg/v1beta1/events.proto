@@ -5,6 +5,8 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/gotabit/gotabit/x/msg/types";
 
-message EventSend {
-  uint64 id = 1;
+message EventMsgSend {
+  string sender = 1;
+  string receiver = 2;
+  uint64 id = 3;
 }

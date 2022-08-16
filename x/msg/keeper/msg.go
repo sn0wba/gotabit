@@ -7,6 +7,7 @@ import (
 	"github.com/gotabit/gotabit/x/msg/types"
 )
 
+// GetLastMsgId returns last msg id
 func (k Keeper) GetLastMsgId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.KeyLastMsgId)
@@ -16,12 +17,14 @@ func (k Keeper) GetLastMsgId(ctx sdk.Context) uint64 {
 	return sdk.BigEndianToUint64(bz)
 }
 
+// SetLastMsgId set last msg id
 func (k Keeper) SetLastMsgId(ctx sdk.Context, id uint64) {
 	idBz := sdk.Uint64ToBigEndian(id)
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.KeyLastMsgId, idBz)
 }
 
+// GetMsgById returns msg by id
 func (k Keeper) GetMsgById(ctx sdk.Context, id uint64) (*types.Msg, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(append(types.PrefixMsg, sdk.Uint64ToBigEndian(id)...))
@@ -33,6 +36,7 @@ func (k Keeper) GetMsgById(ctx sdk.Context, id uint64) (*types.Msg, error) {
 	return &msg, nil
 }
 
+// GetMsgsBySender returns all msgs by sender
 func (k Keeper) GetMsgsBySender(ctx sdk.Context, sender string) []*types.Msg {
 	store := ctx.KVStore(k.storeKey)
 
@@ -55,6 +59,7 @@ func (k Keeper) GetMsgsBySender(ctx sdk.Context, sender string) []*types.Msg {
 	return msgs
 }
 
+// GetMsgsByReceiver returns all msgs by receiver
 func (k Keeper) GetMsgsByReceiver(ctx sdk.Context, receiver string) []*types.Msg {
 	store := ctx.KVStore(k.storeKey)
 
@@ -99,8 +104,10 @@ func (k Keeper) Send(ctx sdk.Context, mm *types.MsgMsg) (id uint64, err error) {
 
 	msg.Id = msgId
 	k.SetMsg(ctx, msg)
-	ctx.EventManager().EmitTypedEvent(&types.EventSend{
-		Id: id,
+	ctx.EventManager().EmitTypedEvent(&types.EventMsgSend{
+		Sender:   msg.From,
+		Receiver: msg.To,
+		Id:       id,
 	})
 
 	return msgId, nil
