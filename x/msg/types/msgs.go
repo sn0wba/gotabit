@@ -16,8 +16,9 @@ var (
 )
 
 // NewMsg - construct token issue msg.
-func NewMsgMsg(from, to, message string) *MsgMsg {
+func NewMsgMsg(sender, from, to, message string) *MsgMsg {
 	return &MsgMsg{
+		Sender:  sender,
 		From:    from,
 		To:      to,
 		Message: message,
@@ -52,7 +53,7 @@ func (mm MsgMsg) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (mm MsgMsg) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(mm.From)
+	from, err := sdk.AccAddressFromBech32(mm.Sender)
 	if err != nil {
 		panic(err)
 	}

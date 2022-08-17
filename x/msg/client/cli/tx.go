@@ -32,12 +32,10 @@ func NewTxCmd() *cobra.Command {
 
 func GetCmdMsg() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "send [flags]",
+		Use:  "send FROM TO MESSAGE [flags]",
 		Long: "Send message to other user",
 		Example: fmt.Sprintf(
-			`$ %s tx msg send
-				--to="gio1yx06xsqreefnhwmtu8ypd6vlatwxfqs9c2h2cq"
-				--message="Example Message"`,
+			`$ %s tx msg send gio13m350fvnk3s6y5n8ugxhmka277r0t7cw48ru47 gio1yx06xsqreefnhwmtu8ypd6vlatwxfqs9c2h2cq "Example Message"`,
 			version.AppName,
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -46,20 +44,24 @@ func GetCmdMsg() *cobra.Command {
 				return err
 			}
 
-			if len(args) != 2 {
+			if len(args) != 3 {
 				return sdkerrors.Wrapf(sdkerrors.Error{}, "invalid args length")
 			}
 
-			to := args[0]
+			from := args[0]
 			if err != nil {
 				return err
 			}
-			message := args[1]
+			to := args[1]
+			if err != nil {
+				return err
+			}
+			message := args[2]
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgMsg(clientCtx.GetFromAddress().String(), to, message)
+			msg := types.NewMsgMsg(clientCtx.GetFromAddress().String(), from, to, message)
 
 			if err := msg.ValidateBasic(); err != nil {
 				return err
