@@ -28,6 +28,9 @@ func (m msgServer) Msg(goCtx context.Context, msg *types.MsgMsg) (*types.MsgMsgR
 	}
 
 	return &types.MsgMsgResponse{
-		Id: id,
+		Id:      id,
+		From:    msg.From,
+		To:      msg.To,
+		Message: msg.Message,
 	}, nil
 }

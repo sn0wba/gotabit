@@ -7,6 +7,15 @@ import (
 	"github.com/gotabit/gotabit/x/msg/types"
 )
 
+func (suite *KeeperTestSuite) SendMsg(sender sdk.AccAddress, from, to, message string) *types.MsgMsgResponse {
+	msgServer := keeper.NewMsgServerImpl(&suite.app.MsgKeeper)
+	resp, err := msgServer.Msg(sdk.WrapSDKContext(suite.ctx), types.NewMsgMsg(
+		sender.String(), from, to, message,
+	))
+	suite.Require().NoError(err)
+	return resp
+}
+
 func (suite *KeeperTestSuite) TestMsgServerSendMsg() {
 	tests := []struct {
 		testCase      string
@@ -23,6 +32,14 @@ func (suite *KeeperTestSuite) TestMsgServerSendMsg() {
 			"test message",
 			true,
 			1,
+		},
+		{
+			"send empty message",
+			"from",
+			"to",
+			"",
+			false,
+			0,
 		},
 	}
 

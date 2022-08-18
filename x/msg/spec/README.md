@@ -48,18 +48,22 @@ At the time of message execution, it creates a new message object.
 
 ```protobuf
 message MsgMsg {
-  string from = 1 [
+  string sender = 1;
+  string from = 2 [
     (gogoproto.moretags) = "yaml:\"from_address\""
   ];
-  string to = 2 [
+  string to = 3 [
     (gogoproto.moretags) = "yaml:\"to_address\""
   ];
-  string message = 3 [
+  string message = 4 [
     (gogoproto.moretags) = "yaml:\"msg\""
   ];
 }
 message MsgMsgResponse {
   uint64 id = 1;
+  string from = 2;
+  string to = 3;
+  string message = 4;
 }
 ```
 
