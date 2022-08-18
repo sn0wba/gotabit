@@ -68,7 +68,7 @@ func BenchmarkSimulation(b *testing.B) {
 		simapp.EmptyAppOptions{},
 	)
 
-	simApp, ok := app.(SimApp)
+	simApp, ok := cosmoscmd.App(app).(SimApp)
 	require.True(b, ok, "can't use simapp")
 
 	// Run randomized simulations
